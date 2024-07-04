@@ -1,8 +1,18 @@
 from date import date_info
 from AiChat_reminder import spark
+import json
+from random import choice
 
 
 # date_error = {'date': '2024年5月32日', 'weekday': '星期九', 'holiday_status': 1, 'holiday_info': '周末'}
+
+def load_data_from_json(pathway):
+    try:
+        with open(pathway, "r") as json_file:
+            data = json.load(json_file)
+        return data
+    except FileNotFoundError:
+        return []
 
 
 def when_weekend(weekday_str):
@@ -47,14 +57,18 @@ def noon_question():
     is_holiday = date["holiday_status"]
     weekday = date["weekday"]
     day = date["date"]
+    pathway = 'data/potato_reminder/menu.json'
+    menu = load_data_from_json(pathway)
+    dish = choice(menu)
+
     if is_holiday:
         holiday_info = date["holiday_info"]
-        question = f"今天是{weekday}，是{holiday_info}，请根据这些信息问候午安，表达自己的关心并提出一些午餐建议。"
+        question = f"今天是{weekday}，是{holiday_info}，请根据这些信息问候午安，表达自己的关心并提出一些午餐建议。推荐一些{dish}，直接给出菜名。"
         print(question)
         return question
     else:
         last = when_weekend(weekday)
-        question = f"今天是{weekday}，是工作日，距离周末还剩{last}天，请根据这些信息问候午安，表达自己的关心并提出一些午餐建议。"
+        question = f"今天是{weekday}，是工作日，距离周末还剩{last}天，请根据这些信息问候午安，表达自己的关心并提出一些午餐建议，可以推荐一些{dish}菜品，直接给出菜名。"
         print(question)
         return question
 

@@ -8,7 +8,7 @@ from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
 
 from .asking import morning_question, noon_question, evening_question, get_answer, night_question
-from .clock import group_del, group_add, load_data_from_json
+from .clock import group_del, group_add, load_data_from_json, menu_add, menu_del
 from .config import Config
 
 driver = get_driver()
@@ -17,6 +17,8 @@ nickname = list(global_config.nickname)[0]
 reminder_add = on_command("reminder_group_add", permission=SUPERUSER)
 reminder_del = on_command("reminder_group_delete", permission=SUPERUSER)
 reminder_test = on_command("reminder_test", permission=SUPERUSER)
+reminder_menu_add = on_command('reminder_menu_add', permission=SUPERUSER)
+reminder_menu_del = on_command('reminder_menu_delete', permission=SUPERUSER)
 scheduler = require("nonebot_plugin_apscheduler").scheduler
 
 
@@ -50,12 +52,35 @@ async def _(arg=CommandArg()):
     await selected_function()
 
 
+@reminder_menu_add.handle()
+async def _(arg=CommandArg()):
+    text = str(arg)
+    menu_add(text)
+    message = f'{text}已添加'
+    msg = MessageSegment.text(message)
+    await reminder_menu_add.finish(msg)
+
+
+@reminder_menu_del.handle()
+async def _(arg=CommandArg()):
+    text = str(arg)
+    if menu_del(text):
+        message = f'{text}已移除'
+        msg = MessageSegment.text(message)
+        await reminder_menu_del.finish(msg)
+    else:
+        message = f'{text}不存在'
+        msg = MessageSegment.text(message)
+        await reminder_menu_del.finish(msg)
+
+
 async def morning():
     question = morning_question()
     answer = get_answer(question)
     text = f"「{nickname}·问好」\n\n{answer}"
     msg = MessageSegment.text(text)
-    data = load_data_from_json()
+    pathway = "data/potato_reminder/group.json"
+    data = load_data_from_json(pathway)
     for i in data:
         await nonebot.get_bot().call_api("send_msg", group_id=int(i), message=msg)
 
@@ -65,7 +90,8 @@ async def noon():
     answer = get_answer(question)
     text = f"「{nickname}·问好」\n\n{answer}"
     msg = MessageSegment.text(text)
-    data = load_data_from_json()
+    pathway = "data/potato_reminder/group.json"
+    data = load_data_from_json(pathway)
     for i in data:
         await nonebot.get_bot().call_api("send_msg", group_id=int(i), message=msg)
 
@@ -75,7 +101,8 @@ async def evening():
     answer = get_answer(question)
     text = f"「{nickname}·问好」\n\n{answer}"
     msg = MessageSegment.text(text)
-    data = load_data_from_json()
+    pathway = "data/potato_reminder/group.json"
+    data = load_data_from_json(pathway)
     for i in data:
         await nonebot.get_bot().call_api("send_msg", group_id=int(i), message=msg)
 
@@ -85,7 +112,8 @@ async def night():
     answer = get_answer(question)
     text = f"「{nickname}·问好」\n\n{answer}"
     msg = MessageSegment.text(text)
-    data = load_data_from_json()
+    pathway = "data/potato_reminder/group.json"
+    data = load_data_from_json(pathway)
     for i in data:
         await nonebot.get_bot().call_api("send_msg", group_id=int(i), message=msg)
 

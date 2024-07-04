@@ -9,6 +9,7 @@ Potato的一些插件，适用于onebot11，部分也适配red、satori，~~我�
 - **potato_reminder_new**
   - 需要onebot v11协议适配器，但可快速更改为red。
   - 实现对当天节假日信息的获取，并将信息组织成问句向[Spark](https://www.xfyun.cn/)模型获取回答，感谢讯飞的巨量免费tokens.
+  - 实现午餐播报的餐单添加。
 - **[nonebot_plugin_fortune](https://github.com/MinatoAquaCrews/nonebot_plugin_fortune)**
   - 需要onebot v11协议适配器。
   - 实现简单的抽签，并保证每日只能抽一次。
