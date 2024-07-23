@@ -11,8 +11,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 70px; /* 字体大小 */
-            font-weight: bold; /* 字体加粗 */
+            font-size: 70px;
+            font-weight: bold;
         }
     </style>
 </head>
