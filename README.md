@@ -1,27 +1,8 @@
 <div align="center">
-     <img alt="potato_avatar.jpg" height="300" src="https://github.com/Hydrogens2/Potato-plugins/raw/main/potato_avatar.jpg" width="300"/>
+     <img alt="potato_avatar.jpg" height="200" src="https://github.com/Hydrogens2/Potato-plugins/raw/main/potato_avatar.jpg" width="200"/>
 </div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Potato</title>
-    <style>
-        .center-text {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 70px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="center-text">
-        Potato
-    </div>
-</body>
-
+<h1 align="center">Potato</h1>
 
 ## 前言
 这里是Potato 的一些插件，适用于 onebot11，部分也适配 red、satori，~~我也不知道我之前写的什么东西。~~
