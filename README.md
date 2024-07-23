@@ -1,6 +1,14 @@
-# Potato-plugins
+<div align="center">
+     <img alt="potato_avatar.jpg" height="300" src="https://github.com/Hydrogens2/Potato-plugins/raw/main/potato_avatar.jpg" width="300"/>
+</div>
+
+<div align="center">
+    <font size="70"><b>Potato</b></font>
+</div>
+
+
 ## 前言
-Potato 的一些插件，适用于 onebot11，部分也适配 red、satori，~~我也不知道我之前写的什么东西。~~
+这里是Potato 的一些插件，适用于 onebot11，部分也适配 red、satori，~~我也不知道我之前写的什么东西。~~
 ## 插件列表
 - **potato_heweather_report**
   - 需要 onebot v11 协议适配器，原插件可多协议适配。
