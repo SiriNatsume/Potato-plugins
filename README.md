@@ -2,9 +2,25 @@
      <img alt="potato_avatar.jpg" height="300" src="https://github.com/Hydrogens2/Potato-plugins/raw/main/potato_avatar.jpg" width="300"/>
 </div>
 
-<div align="center">
-    <font size="70"><b>Potato</b></font>
-</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potato</title>
+    <style>
+        .center-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 70px; /* 字体大小 */
+            font-weight: bold; /* 字体加粗 */
+        }
+    </style>
+</head>
+<body>
+    <div class="center-text">
+        Potato
+    </div>
+</body>
 
 
 ## 前言
