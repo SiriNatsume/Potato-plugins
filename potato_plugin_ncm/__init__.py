@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import asyncio
+import time
 from typing import Union
 import nonebot
 from nonebot import on_command, require
@@ -368,6 +369,8 @@ async def broadcast():
                 # 失败后生成并发送网易云卡片
                 await nonebot.get_bot().call_api("send_msg", group_id=int(gid),
                                                  message=MessageSegment.music("163", nid))
+            # 降低风控风险，并避免一次性向签名服务器发送过多请求
+            time.sleep(7)
     else:
         pass
 
