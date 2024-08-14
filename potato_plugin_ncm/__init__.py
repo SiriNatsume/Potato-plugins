@@ -294,6 +294,7 @@ def write_music_list():
         # 检查非 count 空白项
         if data['blank'] != '114514':
             date: str = data['blank']
+            data['blank'] = '114514'
 
         song = {'user': nickname, 'id': _id, 'name': music_name}
         data[date] = song

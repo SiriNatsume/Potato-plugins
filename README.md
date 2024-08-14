@@ -45,6 +45,8 @@
   - 添加插件 [nonebot_plugin_sticker_saver](https://github.com/colasama/nonebot-plugin-sticker-saver) 。
 - 2024.08.13
   - 添加插件 potato_plugin_ncm 。
+- 2024.08.14
+  - 修复插件 potato_plugin_ncm 的若干问题。
 ## ToDo
 - [x] 修复 Potato 天天喝热牛奶的问题。
 - [ ] 实现每日二次元新闻。~~但是我连 api 都没找到啊😇~~
