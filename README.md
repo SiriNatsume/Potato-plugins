@@ -38,7 +38,7 @@
   - nonebot_plugin_ncm 已不再维护。
 ## 更新日志
 - 2024.07.04
-  - potato_reminder_new 增加午餐播报的菜单功能。
+  - 插件 potato_reminder_new 添加午餐播报的菜单功能。
   - ~~尝试修复了 Potato 天天吃沙拉的问题。~~
 - 2024.07.23
   - 修正 readme 中对 [nonebot_plugin_fortune](https://github.com/MinatoAquaCrews/nonebot_plugin_fortune) 的 pillow 库版本建议。
@@ -46,7 +46,11 @@
 - 2024.08.13
   - 添加插件 potato_plugin_ncm 。
 - 2024.08.14
-  - 修复插件 potato_plugin_ncm 的若干问题。
+  - 插件 potato_plugin_ncm 修复若干问题。
+- 2024.08.15
+  - 插件 potato_plugin_ncm 添加查询曲库时返回艺人名功能。
+  - 插件 potato_plugin_ncm 优化自定义音乐卡片的分享者展示逻辑。
+  - 为所有主动播报加入等待时间。
 ## ToDo
 - [x] 修复 Potato 天天喝热牛奶的问题。
 - [ ] 实现每日二次元新闻。~~但是我连 api 都没找到啊😇~~
