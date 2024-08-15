@@ -4,6 +4,7 @@ from nonebot import require, on_command
 from nonebot.permission import SUPERUSER
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import json
+import time
 import nonebot
 from nonebot.adapters.onebot.v11 import MessageSegment, GroupMessageEvent
 from .clock import load_data_from_json, group_add, group_del, report_hour, report_minute
@@ -23,13 +24,14 @@ def remove_upprintable_chars(s):
 
 
 async def read60s():
-    msg = await suijitu()
+    msg = await get_news()
     data = load_data_from_json()
     for qq_group in data:
-        await nonebot.get_bot().call_api("send_msg", group_id=int(qq_group), message=msg)  # MessageEvent可以使用CQ发图片
+        await nonebot.get_bot().call_api("send_msg", group_id=int(qq_group), message=msg)
+        time.sleep(2)  # MessageEvent可以使用CQ发图片
 
 
-async def suijitu():
+async def get_news():
     try:
         url = "https://api.2xb.cn/zaob"  # 备用网址
         resp = requests.get(url)
@@ -90,4 +92,4 @@ __plugin_meta__ = PluginMetadata(
 )
 
 if __name__ == "__main__":
-    suijitu()
+    get_news()

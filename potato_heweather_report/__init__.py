@@ -1,3 +1,5 @@
+import time
+
 from nonebot import require, on_command
 from nonebot.params import CommandArg
 from nonebot.log import logger
@@ -109,6 +111,7 @@ async def clock():
         msg = MessageSegment.image(img)
 
         await nonebot.get_bot().call_api("send_msg", group_id=int(gid), message=msg)
+        time.sleep(2)
 
 
 scheduler.add_job(clock, "cron", hour=report_hour, minute=report_minute)

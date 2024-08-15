@@ -18,7 +18,7 @@ from nonebot.adapters.onebot.v11 import (Message, Bot,
                                          PrivateMessageEvent,
                                          ActionFailed)
 
-# 触发器
+# 响应器
 search = on_command("ncm", priority=2, block=False)
 delete = on_command('ncm_delete', aliases={'ncm_del'}, priority=2, block=False)
 show = on_command('ncm_list', aliases={'ncm_ls'}, priority=2, block=False)
@@ -32,6 +32,7 @@ scheduler = require("nonebot_plugin_apscheduler").scheduler
 _id: int = 0
 nickname: str = 'default'
 music_name: str = 'default'
+ar: str = 'default'
 control: bool = True
 lock = asyncio.Lock()
 pathway: str = Config.ncm_pathway
@@ -68,6 +69,7 @@ async def search_receive(bot: Bot,
         global nickname
         global _id
         global music_name
+        global ar
 
         key = args.extract_plain_text()
         # 获取音乐id、推荐人名称
@@ -87,6 +89,7 @@ async def search_receive(bot: Bot,
         try:
             res = nncm.get_info(_id=_id)
             music_name = res['songs'][0]['name']
+            ar = res['songs'][0]['ar'][0]['name']
         except:
             msg = f'\napi 回应查询失败，请稍后再试'
             await search.finish(MessageSegment.at(uid) + MessageSegment.text(msg))
@@ -222,7 +225,8 @@ async def _(event: GroupMessageEvent, args: Message = CommandArg()):
         for key in data:
             if key not in _:
                 name = data[key]['name']
-                m += f'{key}:\n{name}\n\n'
+                _ar = data[key]['ar']
+                m += f'{key}\nMusic：{name}\nArtist：{_ar}\n\n'
         msg = MessageSegment.text(m.rstrip('\n\n'))
 
     await show.finish(msg)
@@ -273,6 +277,7 @@ def write_music_list():
     global _id
     global nickname
     global music_name
+    global ar
 
     data = load_data_from_json(pathway)
     if data['count'] <= limit:
@@ -296,7 +301,7 @@ def write_music_list():
             date: str = data['blank']
             data['blank'] = '114514'
 
-        song = {'user': nickname, 'id': _id, 'name': music_name}
+        song = {'user': nickname, 'id': _id, 'name': music_name, 'ar': ar}
         data[date] = song
         data['count'] += 1
         save_data_to_json(data, pathway)

@@ -109,7 +109,12 @@ def make_music_card(nid, user):
     _head = 'https://music.163.com/song?id='
     # _id = res2['data'][0]['id']
     _url = f'{_head}{nid}'
-    content = f'Recommended by {user}'
+    # 根据名称长度生成不同样式的content
+    length = len(user)
+    if length <= 4:
+        content = f'Recommended by {user}'
+    else:
+        content = f'{user} recommends'
 
     # 生成卡片
     msg = MessageSegment("music", {"type": "custom", "url": _url, "audio": _audio, "voice": _audio,

@@ -6,7 +6,7 @@ from nonebot.adapters.onebot.v11 import (
 )
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
-
+import time
 from .asking import morning_question, noon_question, evening_question, get_answer, night_question
 from .clock import group_del, group_add, load_data_from_json, menu_add, menu_del
 from .config import Config
@@ -83,6 +83,7 @@ async def morning():
     data = load_data_from_json(pathway)
     for i in data:
         await nonebot.get_bot().call_api("send_msg", group_id=int(i), message=msg)
+        time.sleep(2)
 
 
 async def noon():
@@ -94,6 +95,7 @@ async def noon():
     data = load_data_from_json(pathway)
     for i in data:
         await nonebot.get_bot().call_api("send_msg", group_id=int(i), message=msg)
+        time.sleep(2)
 
 
 async def evening():
@@ -105,6 +107,7 @@ async def evening():
     data = load_data_from_json(pathway)
     for i in data:
         await nonebot.get_bot().call_api("send_msg", group_id=int(i), message=msg)
+        time.sleep(2)
 
 
 async def night():
@@ -116,6 +119,7 @@ async def night():
     data = load_data_from_json(pathway)
     for i in data:
         await nonebot.get_bot().call_api("send_msg", group_id=int(i), message=msg)
+        time.sleep(2)
 
 
 scheduler.add_job(morning, "cron", hour=Config.morning_reminder_hour, minute=Config.morning_reminder_minute)
