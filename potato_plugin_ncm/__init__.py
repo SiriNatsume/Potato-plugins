@@ -3,6 +3,7 @@
 import asyncio
 import time
 from typing import Union
+from datetime import datetime, timedelta
 import nonebot
 from nonebot import on_command, require
 from nonebot.adapters.onebot.v11 import GROUP_ADMIN
@@ -55,7 +56,12 @@ async def search_receive(bot: Bot,
     # 保证会话不并发
     global control
     if not control:
-        msg = f'上一会话正在进行，请等待其结束 😊  '
+        msg = f'有会话正在进行，请等待其结束 😊  '
+        await search.finish(MessageSegment.text(msg) + MessageSegment.at(uid))
+
+    # 播报前 1min 判断
+    if not check_before_broadcast():
+        msg = f'有会话正在进行，请等待其结束 😊  '
         await search.finish(MessageSegment.text(msg) + MessageSegment.at(uid))
 
     # 前置识别曲库是否已满
@@ -82,7 +88,7 @@ async def search_receive(bot: Bot,
             _id = await nncm.search_song(keyword=args.extract_plain_text(), limit=1)
         # 不优雅地返回消息
         if not control:
-            msg = f'上一会话正在进行，请等待其结束 😊  '
+            msg = f'有会话正在进行，请等待其结束 😊  '
             await search.finish(MessageSegment.text(msg) + MessageSegment.at(uid))
 
         # 获取音乐名称
@@ -226,7 +232,8 @@ async def _(event: GroupMessageEvent, args: Message = CommandArg()):
             if key not in _:
                 name = data[key]['name']
                 _ar = data[key]['ar']
-                m += f'{key}\nMusic：{name}\nArtist：{_ar}\n\n'
+                user = data[key]['user']
+                m += f'{key}\nMusic：{name}\nArtist：{_ar}\nUser: {user}\n\n'
         msg = MessageSegment.text(m.rstrip('\n\n'))
 
     await show.finish(msg)
@@ -354,6 +361,7 @@ async def notice():
 # 定时播报
 async def broadcast():
     global pathway
+    global control
     group_pathway = "data/potato_music_report/group.json"
     data = load_data_from_json(pathway)
     group = load_data_from_json_for_group(group_pathway)
@@ -366,6 +374,8 @@ async def broadcast():
         nid: int = song['id']
         user: str = song['user']
         card = make_music_card(nid, user)
+        # # 上锁
+        # control = False
         for gid in group:
             # 尝试发送卡片
             try:
@@ -379,6 +389,8 @@ async def broadcast():
             time.sleep(7)
     else:
         pass
+    # # 解锁进程
+    # control = True
 
 
 # 重置播报状态
@@ -386,6 +398,18 @@ async def reset():
     data = load_data_from_json(pathway)
     data['already_broadcast'] = False
     save_data_to_json(data, pathway)
+
+
+# 播报前判断
+def check_before_broadcast():
+    # 获取本地时间及播报时间
+    now = datetime.now()
+    broadcast_time = datetime(now.year, now.month, now.day, Config.ncm_broadcast_hour, Config.ncm_broadcast_minute)
+
+    # 计算差值
+    delta_time = abs(broadcast_time - now)
+
+    return delta_time > timedelta(minutes=2)
 
 
 # 注册定时任务
