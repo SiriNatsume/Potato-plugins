@@ -3,7 +3,7 @@ class Config:
     limit: int = 3
 
     # 可选曲的白名单群组
-    potato_group: int = 744397924
+    potato_group: int = 114514
 
     # 曲库储存路径
     ncm_pathway: str = 'data/potato_music_report/music.json'
