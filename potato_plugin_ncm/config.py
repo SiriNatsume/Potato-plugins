@@ -19,3 +19,6 @@ class Config:
     # 单次会话超时时间，单位秒
     # nonebot 全局等待回复超时时间为120s
     timeout: int = 119
+
+    # cd 时长，单位秒，用来给历史歌单冷却用
+    cd: int = 30

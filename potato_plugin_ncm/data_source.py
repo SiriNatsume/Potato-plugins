@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import json
+import time
 from datetime import datetime, timedelta
 from nonebot.log import logger
 from pyncm import apis
 from pyncm.apis.cloudsearch import SONG
 from pyncm.apis.login import LoginViaAnonymousAccount
 from nonebot.adapters.onebot.v11 import MessageSegment
+from .config import Config
 
 
 # 网易云 api 方法
@@ -60,6 +62,26 @@ def load_data_from_json_for_group(pathway):
         return data
     except FileNotFoundError:
         return []
+
+
+# 已建设的曲库收集区域
+def load_data_from_json_for_list(pathway):
+    try:
+        with open(pathway, "r") as json_file:
+            data = json.load(json_file)
+        return data
+    except FileNotFoundError:
+        return {'count': 0}
+
+
+# cd 的 load 函数
+def load_data_from_json_for_cd(pathway):
+    try:
+        with open(pathway, "r") as json_file:
+            data = json.load(json_file)
+        return data
+    except FileNotFoundError:
+        return {}
 
 
 def group_add(gid):
@@ -132,6 +154,37 @@ def make_music_card(nid, user):
     # }
     # m = MessageSegment('music', msg)
     return msg
+
+
+# cd相关函数
+cd_use = Config.cd
+cd_pathway = 'data/potato_music_report/cd.json'
+# 初始化时间戳,初始化为开机时间 - cd时间
+init_last_notice_response = time.time() - cd_use
+
+# cd 检查函数
+def cd_check(group_id, cd_time=cd_use):
+    data = load_data_from_json_for_cd(cd_pathway)
+    if group_id not in data:
+        data[group_id] = init_last_notice_response
+        save_data_to_json(data, cd_pathway)
+        return 1
+    else:
+        return time.time() - data[group_id] > cd_time
+
+
+# cd 响应函数
+def cd_response(group_id):
+    data = load_data_from_json_for_cd(cd_pathway)
+    data[group_id] = time.time()
+    save_data_to_json(data, cd_pathway)
+
+
+# cd 重置函数
+def cd_reset(group_id):
+    data = load_data_from_json_for_cd(cd_pathway)
+    data = data.pop(group_id)
+    save_data_to_json(data, cd_pathway)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+
 import asyncio
 import time
+import random
 from typing import Union
 from datetime import datetime, timedelta
 import nonebot
@@ -12,12 +13,13 @@ from nonebot.params import CommandArg, ArgPlainText
 from nonebot.permission import SUPERUSER
 from .config import Config
 from .data_source import (nncm, load_data_from_json, save_data_to_json, get_date, make_music_card, group_add, group_del,
-                          load_data_from_json_for_group)
+                          load_data_from_json_for_group, load_data_from_json_for_list, cd_check, cd_response, cd_reset)
 from nonebot.adapters.onebot.v11 import (Message, Bot,
                                          MessageSegment,
                                          GroupMessageEvent,
                                          PrivateMessageEvent,
                                          ActionFailed)
+
 
 # 响应器
 search = on_command("ncm", priority=2, block=False)
@@ -42,14 +44,50 @@ potato_group: int = Config.potato_group
 timeout: int = Config.timeout
 
 
-# 获取曲目信息
+# 获取曲目信息或播报歌单内音乐
 @search.handle()
 async def search_receive(bot: Bot,
                          event: Union[GroupMessageEvent, PrivateMessageEvent], matcher: Matcher,
                          args: Message = CommandArg()):
+    gid = event.group_id
+
+    # 播报歌单内音乐
+    is_search = args.extract_plain_text()
+    if is_search.replace(' ', '') == '':
+        # 检查 cd
+        if not cd_check(gid):
+            await search.finish()
+        list_pathway = "data/potato_music_report/list.json"
+        song_list = load_data_from_json_for_list(list_pathway)
+        list_count: int = song_list['count']
+        if list_count == 0:
+            msg = '历史歌单无曲目记录 😣'
+            await search.finish(MessageSegment.text(msg))
+        which_song: int = random.randint(0, list_count)
+        song = song_list[which_song][0]
+        likes = song_list[which_song][1]  # 但是 likes 现在还没什么用
+        nid: int = song['id']
+        user: str = song['user']
+        card = make_music_card(nid, user)
+        # 尝试发送卡片
+        try:
+            try:
+                # 尝试发送自定义卡片
+                cd_response(gid)
+                await search.finish(card)
+            except:
+                # 失败后生成并发送网易云卡片
+                cd_response(gid)
+                await search.finish(MessageSegment.music('163', nid))
+        except:
+            msg = f'音乐发送超时或失败 😣'
+            cd_reset(gid)
+            await search.finish(MessageSegment.text(msg))
+
+
+    # 获取曲目信息
     # 白名单
     uid = event.user_id
-    gid = event.group_id
     if gid != potato_group:
         await search.finish()
 
@@ -363,11 +401,19 @@ async def broadcast():
     global pathway
     global control
     group_pathway = "data/potato_music_report/group.json"
+    list_pathway = "data/potato_music_report/list.json"
     data = load_data_from_json(pathway)
     group = load_data_from_json_for_group(group_pathway)
     date = get_date()
+    song_list = load_data_from_json_for_list(list_pathway)  # 读取歌单信息
     if data['count'] != 0:
         song = data.pop(date)
+        list_count: int = song_list['count']
+        # 将播报曲目保存至歌单中，第二项为 like 数
+        song_list[list_count] = [song, 0]
+        song_list['count'] += 1
+        save_data_to_json(song_list, list_pathway)
+        # 正常播报
         data['count'] -= 1
         data['already_broadcast'] = True
         save_data_to_json(data, pathway)
@@ -386,7 +432,7 @@ async def broadcast():
                 await nonebot.get_bot().call_api("send_msg", group_id=int(gid),
                                                  message=MessageSegment.music("163", nid))
             # 降低风控风险，并避免一次性向签名服务器发送过多请求
-            time.sleep(7)
+            time.sleep(20)
     else:
         pass
     # # 解锁进程
@@ -409,7 +455,7 @@ def check_before_broadcast():
     # 计算差值
     delta_time = abs(broadcast_time - now)
 
-    return delta_time > timedelta(minutes=2)
+    return delta_time > timedelta(minutes=5)
 
 
 # 注册定时任务
