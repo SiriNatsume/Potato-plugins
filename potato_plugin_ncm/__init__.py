@@ -55,7 +55,7 @@ async def search_receive(bot: Bot,
     is_search = args.extract_plain_text()
     if is_search.replace(' ', '') == '':
         # 检查 cd
-        if not cd_check(gid):
+        if not cd_check(str(gid)):
             await search.finish()
         list_pathway = "data/potato_music_report/list.json"
         song_list = load_data_from_json_for_list(list_pathway)
@@ -63,7 +63,7 @@ async def search_receive(bot: Bot,
         if list_count == 0:
             msg = '历史歌单无曲目记录 😣'
             await search.finish(MessageSegment.text(msg))
-        which_song: int = random.randint(0, list_count)
+        which_song: str = str(random.randrange(0, list_count))
         song = song_list[which_song][0]
         likes = song_list[which_song][1]  # 但是 likes 现在还没什么用
         nid: int = song['id']
@@ -73,15 +73,15 @@ async def search_receive(bot: Bot,
         try:
             try:
                 # 尝试发送自定义卡片
-                cd_response(gid)
+                cd_response(str(gid))
                 await search.finish(card)
-            except:
+            except ActionFailed:
                 # 失败后生成并发送网易云卡片
-                cd_response(gid)
+                cd_response(str(gid))
                 await search.finish(MessageSegment.music('163', nid))
-        except:
+        except ActionFailed:
             msg = f'音乐发送超时或失败 😣'
-            cd_reset(gid)
+            cd_reset(str(gid))
             await search.finish(MessageSegment.text(msg))
 
 

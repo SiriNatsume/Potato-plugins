@@ -165,25 +165,28 @@ init_last_notice_response = time.time() - cd_use
 # cd 检查函数
 def cd_check(group_id, cd_time=cd_use):
     data = load_data_from_json_for_cd(cd_pathway)
-    if group_id not in data:
-        data[group_id] = init_last_notice_response
+    gid = str(group_id)
+    if gid not in data:
+        data[gid] = init_last_notice_response
         save_data_to_json(data, cd_pathway)
         return 1
     else:
-        return time.time() - data[group_id] > cd_time
+        return time.time() - data[gid] > cd_time
 
 
 # cd 响应函数
 def cd_response(group_id):
+    gid = str(group_id)
     data = load_data_from_json_for_cd(cd_pathway)
-    data[group_id] = time.time()
+    data[gid] = time.time()
     save_data_to_json(data, cd_pathway)
 
 
 # cd 重置函数
 def cd_reset(group_id):
+    gid = str(group_id)
     data = load_data_from_json_for_cd(cd_pathway)
-    data = data.pop(group_id)
+    data = data.pop(gid)
     save_data_to_json(data, cd_pathway)
 
 

@@ -54,6 +54,9 @@
 - 2024.09.02
   - 插件 potato_plugin_ncm 添加查询曲库时返回分享者信息功能。
   - 插件 potato_plugin_ncm 添加在播报时的锁定功能，时间为播报时间的 ±2 min。
+- 2024.12.07
+  - 插件 potato_plugin_ncm 添加历史曲库记录功能。
+  - 插件 potato_plugin_ncm 添加历史曲库触发式播报功能。
 ## ToDo
 - [x] 修复 Potato 天天喝热牛奶的问题。
 - [ ] 实现每日二次元新闻。~~但是我连 api 都没找到啊😇~~
